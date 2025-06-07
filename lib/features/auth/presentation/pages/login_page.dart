@@ -49,12 +49,11 @@ class _LoginPageState extends State<LoginPage> {
                 isObscureText: true,
               ),
               const SizedBox(height: 20),
-              const AuthGradientButton(buttonText: 'Sign In'),
+              AuthGradientButton(buttonText: 'Sign In', onPressed: () {}),
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
                   Navigator.push(context, SignupPage.route());
-
                 },
                 child: RichText(
                   text: TextSpan(
@@ -63,7 +62,9 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       TextSpan(
                         text: "Sign Up",
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(
                           color: AppPallete.gradient2,
                           fontWeight: FontWeight.bold,
                         ),
