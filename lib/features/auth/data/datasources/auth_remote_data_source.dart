@@ -44,6 +44,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String password,
   }) async {
-    // TODO: Implement loginWithEmailPassword
+    return 'dummy_token';
   }
 }
