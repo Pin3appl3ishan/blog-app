@@ -1,4 +1,6 @@
+import 'package:blog_app/core/usecase/usecase.dart';
 import 'package:blog_app/features/auth/domain/entities/user.dart';
+import 'package:blog_app/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_login.dart';
 import 'package:blog_app/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:flutter/material.dart';
@@ -8,17 +10,35 @@ part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
+  // below are use cases from domain layer which're responsible for core bs logic
   final UserSignUp _userSignUp;
   final UserLogin _userLogin;
+  final CurrentUser _currentUser;
 
-  AuthBloc({required UserSignUp userSignup, required UserLogin userLogin})
-    : _userSignUp =
-          userSignup, // assigning incoming parameter to private fields
-      _userLogin = userLogin,
-      super(AuthInitial()) {
+  AuthBloc({
+    required UserSignUp userSignup,
+    required UserLogin userLogin,
+    required CurrentUser currentUser,
+  }) : _userSignUp = userSignup,
+       // assigning incoming parameter to private fields
+       _userLogin = userLogin,
+       _currentUser = currentUser,
+       super(AuthInitial()) {
     // calls superclass with an initial state
-    on<AuthSignUp>(_onAuthSignUp);
+    on<AuthSignUp>(_onAuthSignUp); // on<Event>(fn);
     on<AuthLogin>(_onAuthLogin);
+    on<AuthIsUserLoggedIn>(_isUserLoggedIn);
+  }
+
+  void _isUserLoggedIn(
+    AuthIsUserLoggedIn event,
+    Emitter<AuthState> emit,
+  ) async {
+    final res = await _currentUser(NoParams());
+
+    res.fold((l) => emit(AuthFailure(l.message)), (r) {
+      emit(AuthSuccess(r));
+    });
   }
 
   void _onAuthSignUp(AuthSignUp event, Emitter<AuthState> emit) async {
